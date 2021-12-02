@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Section from './components/Section';
+import FeedbackOptions from './components/FeedbackOptions';
+import Statistics from './components/Statistics';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  };
+
+  // берём названия кнопок и прибавляем 1 к state
+  onLeaveFeedback = event => {
+    const label = event.target.textContent;
+    this.setState(prevState => ({ [label]: (prevState[label] += 1) }));
+  };
+
+  // суммируем значения отзывов в state
+  countTotalFeedback = () => {
+    const total = Object.keys(this.state).reduce(
+      (acc, value) => acc + this.state[value],
+      0,
+    );
+    return total;
+  };
+
+  // считаем процент хороших отзывов
+  countPositiveFeedbackPercentage = () => {
+    const percent = Math.round(
+      (this.state.good * 100) / this.countTotalFeedback(),
+    );
+    return percent;
+  };
+
+  render() {
+    const { good, neutral, bad } = this.state;
+    return (
+      <>
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            options={this.state}
+            onLeaveFeedback={this.onLeaveFeedback}
+          />
+        </Section>
+        <Section title="Statistics">
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={this.countTotalFeedback}
+            positivePercentage={this.countPositiveFeedbackPercentage}
+          />
+        </Section>
+      </>
+    );
+  }
 }
 
 export default App;
