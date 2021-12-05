@@ -10,10 +10,10 @@ class App extends Component {
     bad: 0,
   };
 
-  // берём названия кнопок и прибавляем 1 к state
-  onLeaveFeedback = event => {
-    const label = event.target.textContent;
-    this.setState(prevState => ({ [label]: (prevState[label] += 1) }));
+  onLeaveFeedback = option => {
+    this.setState(prevState => ({
+      [option]: prevState[option] + 1,
+    }));
   };
 
   // суммируем значения отзывов в state
